@@ -2,11 +2,6 @@ class BotManager {
     constructor() {
         this.botStatus = 'unknown';
         this.config = {};
-        this.init();
-    }
-
-    init() {
-        // Configuration will be loaded when needed
     }
 
     async startBot() {
@@ -94,6 +89,9 @@ class BotManager {
                 stopBtn.disabled = true;
             }
         }
+        
+        // Update bot status in class
+        this.botStatus = status;
     }
 }
 
