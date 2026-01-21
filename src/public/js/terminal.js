@@ -180,4 +180,22 @@ class SecureTerminal {
     }
 
     escapeHtml(text) {
-       
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    async decryptOutput(encrypted) {
+        try {
+            // In production, implement proper decryption
+            return encrypted.content || encrypted;
+        } catch (error) {
+            return `[Decryption error: ${error.message}]`;
+        }
+    }
+}
+
+// Initialize terminal when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    window.terminal = new SecureTerminal();
+});
