@@ -3,7 +3,13 @@ class SecureTerminal {
         this.history = [];
         this.currentHistoryIndex = -1;
         this.sessionId = Date.now();
-        this.init();
+        this.commandInput = null;
+        this.executeButton = null;
+        this.terminalOutput = null;
+        this.clearButton = null;
+        this.copyButton = null;
+        this.saveButton = null;
+        this.historyList = null;
     }
 
     init() {
@@ -15,16 +21,25 @@ class SecureTerminal {
         this.saveButton = document.getElementById('saveTerminal');
         this.historyList = document.getElementById('historyList');
         
+        if (!this.commandInput || !this.terminalOutput) {
+            console.error('Terminal elements not found');
+            return;
+        }
+        
         this.setupEventListeners();
         this.printWelcomeMessage();
         
         // Focus input
         setTimeout(() => {
-            this.commandInput.focus();
+            if (this.commandInput) {
+                this.commandInput.focus();
+            }
         }, 100);
     }
 
     setupEventListeners() {
+        if (!this.commandInput || !this.executeButton) return;
+        
         // Command execution
         this.commandInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -46,19 +61,30 @@ class SecureTerminal {
         });
 
         this.executeButton.addEventListener('click', () => this.executeCommand());
-        this.clearButton.addEventListener('click', () => this.clearTerminal());
-        this.copyButton.addEventListener('click', () => this.copyTerminal());
-        this.saveButton.addEventListener('click', () => this.saveTerminal());
+        
+        if (this.clearButton) {
+            this.clearButton.addEventListener('click', () => this.clearTerminal());
+        }
+        
+        if (this.copyButton) {
+            this.copyButton.addEventListener('click', () => this.copyTerminal());
+        }
+        
+        if (this.saveButton) {
+            this.saveButton.addEventListener('click', () => this.saveTerminal());
+        }
         
         // Auto-focus on click anywhere
         document.addEventListener('click', (e) => {
-            if (!this.commandInput.contains(e.target)) {
+            if (this.commandInput && !this.commandInput.contains(e.target)) {
                 this.commandInput.focus();
             }
         });
     }
 
     async executeCommand() {
+        if (!this.commandInput) return;
+        
         const command = this.commandInput.value.trim();
         if (!command) return;
 
@@ -97,9 +123,9 @@ class SecureTerminal {
             const data = await response.json();
             
             if (data.success) {
-                this.printOutput(data.output, 'success');
+                this.printOutput(data.output || '(No output)', 'success');
             } else {
-                this.printOutput(`Error: ${data.error}`, 'error');
+                this.printOutput(`Error: ${data.error || 'Unknown error'}`, 'error');
                 if (data.allowedCommands) {
                     this.printOutput(`Allowed commands: ${data.allowedCommands.join(', ')}`, 'info');
                 }
@@ -110,6 +136,8 @@ class SecureTerminal {
     }
 
     printCommand(cmd) {
+        if (!this.terminalOutput) return;
+        
         const line = document.createElement('div');
         line.className = 'command-line';
         line.innerHTML = `
@@ -121,14 +149,15 @@ class SecureTerminal {
     }
 
     printOutput(text, type = 'normal') {
+        if (!this.terminalOutput) return;
+        
         const line = document.createElement('div');
         line.className = `output-line ${type}`;
         
         // Preserve formatting
         const formattedText = this.escapeHtml(text)
             .replace(/\n/g, '<br>')
-            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
-            .replace(/ /g, '&nbsp;');
+            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
         
         line.innerHTML = formattedText;
         this.terminalOutput.appendChild(line);
@@ -137,7 +166,7 @@ class SecureTerminal {
 
     addToHistory(command) {
         // Don't add duplicate consecutive commands
-        if (this.history[0] !== command) {
+        if (this.history.length === 0 || this.history[0] !== command) {
             this.history.unshift(command);
             if (this.history.length > 50) {
                 this.history.pop();
@@ -147,7 +176,7 @@ class SecureTerminal {
     }
 
     navigateHistory(direction) {
-        if (this.history.length === 0) return;
+        if (this.history.length === 0 || !this.commandInput) return;
         
         if (direction === -1) { // Arrow up
             if (this.currentHistoryIndex < this.history.length - 1) {
@@ -180,12 +209,16 @@ class SecureTerminal {
     }
 
     selectHistoryCommand(index) {
+        if (!this.commandInput || index >= this.history.length) return;
+        
         this.commandInput.value = this.history[index];
         this.commandInput.focus();
         this.currentHistoryIndex = index;
     }
 
     clearTerminal() {
+        if (!this.terminalOutput) return;
+        
         this.terminalOutput.innerHTML = `
             <div class="welcome-message">
                 <i class="fas fa-shield-alt"></i>
@@ -197,6 +230,8 @@ class SecureTerminal {
     }
 
     copyTerminal() {
+        if (!this.terminalOutput) return;
+        
         const text = this.terminalOutput.innerText;
         navigator.clipboard.writeText(text)
             .then(() => {
@@ -208,6 +243,8 @@ class SecureTerminal {
     }
 
     saveTerminal() {
+        if (!this.terminalOutput) return;
+        
         const text = this.terminalOutput.innerText;
         const blob = new Blob([text], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
@@ -223,6 +260,8 @@ class SecureTerminal {
     }
 
     printWelcomeMessage() {
+        if (!this.terminalOutput) return;
+        
         this.printOutput('=== SECURE TERMINAL ===', 'info');
         this.printOutput('Session ID: ' + this.sessionId, 'info');
         this.printOutput('Connected: ' + new Date().toLocaleString(), 'info');
@@ -231,7 +270,9 @@ class SecureTerminal {
     }
 
     scrollToBottom() {
-        this.terminalOutput.scrollTop = this.terminalOutput.scrollHeight;
+        if (this.terminalOutput) {
+            this.terminalOutput.scrollTop = this.terminalOutput.scrollHeight;
+        }
     }
 
     escapeHtml(text) {
@@ -244,4 +285,5 @@ class SecureTerminal {
 // Initialize terminal when page loads
 document.addEventListener('DOMContentLoaded', () => {
     window.terminal = new SecureTerminal();
+    // Terminal will be initialized by main.js when user logs in
 });
