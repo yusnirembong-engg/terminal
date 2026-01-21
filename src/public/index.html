@@ -23,11 +23,11 @@
                 <form id="loginForm">
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Username</label>
-                        <input type="text" id="username" required autocomplete="off">
+                        <input type="text" id="username" required autocomplete="off" value="admin">
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="password" required>
+                        <input type="password" id="password" required value="admin123">
                     </div>
                     <button type="submit" class="btn-login">
                         <i class="fas fa-sign-in-alt"></i> Login
@@ -92,17 +92,17 @@
                     
                     <div class="quick-actions">
                         <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
-                        <button class="quick-btn" data-action="start-bot">
+                        <button class="quick-btn" data-action="start">
                             <i class="fas fa-play"></i> Start Bot
                         </button>
-                        <button class="quick-btn" data-action="stop-bot">
+                        <button class="quick-btn" data-action="stop">
                             <i class="fas fa-stop"></i> Stop Bot
                         </button>
-                        <button class="quick-btn" data-action="check-logs">
+                        <button class="quick-btn" data-action="logs">
                             <i class="fas fa-file-alt"></i> View Logs
                         </button>
-                        <button class="quick-btn" data-action="update-bot">
-                            <i class="fas fa-sync"></i> Update Bot
+                        <button class="quick-btn" data-action="restart">
+                            <i class="fas fa-sync"></i> Restart Bot
                         </button>
                     </div>
                 </div>
@@ -223,7 +223,172 @@
                     <div id="configTab" class="tab-content">
                         <h3><i class="fas fa-cog"></i> System Configuration</h3>
                         <div class="config-sections">
-                            <!-- Add your configuration forms here -->
+                            <div class="config-card">
+                                <h4><i class="fas fa-globe"></i> IP Whitelist</h4>
+                                <div class="form-row">
+                                    <label>Allowed IPs (comma separated):</label>
+                                    <textarea id="allowedIPs" rows="3" placeholder="192.168.1.1, 203.0.113.5"></textarea>
+                                </div>
+                                <button class="btn-small" onclick="updateIPWhitelist()">
+                                    <i class="fas fa-save"></i> Update IPs
+                                </button>
+                            </div>
+                            
+                            <div class="config-card">
+                                <h4><i class="fas fa-key"></i> Security Settings</h4>
+                                <div class="form-row">
+                                    <label>Session Timeout (minutes):</label>
+                                    <input type="number" id="sessionTimeout" value="60" min="5" max="1440">
+                                </div>
+                                <div class="form-row">
+                                    <label>Max Login Attempts:</label>
+                                    <input type="number" id="maxLoginAttempts" value="5" min="1" max="20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Tab -->
+                    <div id="usersTab" class="tab-content">
+                        <h3><i class="fas fa-users"></i> Users & Groups Management</h3>
+                        <div class="users-management">
+                            <div class="users-list">
+                                <h4>Authorized Users</h4>
+                                <div class="user-list-container">
+                                    <div class="user-item">
+                                        <i class="fas fa-user-shield"></i>
+                                        <div class="user-details">
+                                            <strong>admin</strong>
+                                            <span>Administrator (Full Access)</span>
+                                        </div>
+                                        <button class="btn-small btn-danger">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button class="btn-small" onclick="addNewUser()">
+                                    <i class="fas fa-plus"></i> Add User
+                                </button>
+                            </div>
+                            
+                            <div class="groups-management">
+                                <h4>Telegram Groups</h4>
+                                <div class="form-row">
+                                    <label>Group ID:</label>
+                                    <input type="text" id="groupId" placeholder="-1001234567890">
+                                </div>
+                                <div class="form-row">
+                                    <label>Group Name:</label>
+                                    <input type="text" id="groupName" placeholder="My Bot Group">
+                                </div>
+                                <div class="form-row">
+                                    <label>Permissions:</label>
+                                    <select id="groupPermissions" multiple>
+                                        <option value="send_messages">Send Messages</option>
+                                        <option value="receive_messages">Receive Messages</option>
+                                        <option value="admin_commands">Admin Commands</option>
+                                    </select>
+                                </div>
+                                <button class="btn-small">
+                                    <i class="fas fa-save"></i> Save Group
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logs Tab -->
+                    <div id="logsTab" class="tab-content">
+                        <h3><i class="fas fa-history"></i> System Logs</h3>
+                        <div class="logs-controls">
+                            <select id="logType">
+                                <option value="system">System Logs</option>
+                                <option value="bot">Bot Logs</option>
+                                <option value="access">Access Logs</option>
+                                <option value="terminal">Terminal Logs</option>
+                            </select>
+                            <input type="number" id="logLines" value="100" min="10" max="1000" placeholder="Lines">
+                            <button class="btn-small" onclick="loadLogs()">
+                                <i class="fas fa-sync"></i> Refresh
+                            </button>
+                            <button class="btn-small" onclick="clearLogs()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                        <div class="logs-output" id="logsOutput">
+                            <pre>Loading logs...</pre>
+                        </div>
+                    </div>
+
+                    <!-- Monitoring Tab -->
+                    <div id="monitoringTab" class="tab-content">
+                        <h3><i class="fas fa-chart-line"></i> System Monitoring</h3>
+                        <div class="monitoring-grid">
+                            <div class="monitoring-card">
+                                <h4><i class="fas fa-server"></i> CPU Usage</h4>
+                                <div class="chart-placeholder" id="cpuChart">
+                                    <div class="chart-bar" style="width: 45%"></div>
+                                </div>
+                                <span id="cpuPercent">45%</span>
+                            </div>
+                            
+                            <div class="monitoring-card">
+                                <h4><i class="fas fa-memory"></i> Memory Usage</h4>
+                                <div class="chart-placeholder" id="memoryChart">
+                                    <div class="chart-bar" style="width: 65%"></div>
+                                </div>
+                                <span id="memoryPercent">65%</span>
+                            </div>
+                            
+                            <div class="monitoring-card">
+                                <h4><i class="fas fa-hdd"></i> Disk Usage</h4>
+                                <div class="chart-placeholder" id="diskChart">
+                                    <div class="chart-bar" style="width: 30%"></div>
+                                </div>
+                                <span id="diskPercent">30%</span>
+                            </div>
+                            
+                            <div class="monitoring-card">
+                                <h4><i class="fas fa-network-wired"></i> Network</h4>
+                                <div class="network-stats">
+                                    <p><i class="fas fa-arrow-up"></i> Upload: <span id="uploadSpeed">1.2 MB/s</span></p>
+                                    <p><i class="fas fa-arrow-down"></i> Download: <span id="downloadSpeed">3.4 MB/s</span></p>
+                                    <p><i class="fas fa-plug"></i> Connections: <span id="connections">12</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bot-activity">
+                            <h4><i class="fas fa-robot"></i> Bot Activity</h4>
+                            <div class="activity-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-comments"></i>
+                                    <div>
+                                        <strong id="messagesProcessed">0</strong>
+                                        <span>Messages Processed</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-users"></i>
+                                    <div>
+                                        <strong id="activeUsers">0</strong>
+                                        <span>Active Users</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-bolt"></i>
+                                    <div>
+                                        <strong id="uptimeDays">0</strong>
+                                        <span>Days Uptime</span>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <div>
+                                        <strong id="errorsCount">0</strong>
+                                        <span>Errors Today</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -237,16 +402,19 @@
                     <span><i class="fas fa-network-wired"></i> IP: <span id="currentIP">Loading...</span></span>
                 </div>
                 <div class="footer-version">
-                    <span>v1.0.0 | Telegram Bot Panel</span>
+                    <span id="versionText">v1.0.0 | Telegram Bot Panel</span>
+                    <span><i class="fas fa-circle status-dot" id="connectionStatus"></i> <span id="connectionText">Connecting...</span></span>
                 </div>
             </footer>
         </div>
     </div>
 
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
     <!-- Scripts -->
-    <script src="/js/config-editor.js"></script>
+    <script src="/js/main.js"></script>
     <script src="/js/terminal.js"></script>
     <script src="/js/bot-manager.js"></script>
-    <script src="/js/main.js"></script>
 </body>
 </html>
