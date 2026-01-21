@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Control Panel</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-container">
+            <div class="login-box">
+                <div class="logo">
+                    <i class="fab fa-telegram"></i>
+                    <h1>Bot Control Panel</h1>
+                </div>
+                <div class="ip-display" id="ipDisplay">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Detecting IP...</span>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                <div class="security-note">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Access restricted to authorized IPs only</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Panel (Hidden until login) -->
+        <div id="mainPanel" class="main-panel hidden">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <div class="brand">
+                        <i class="fab fa-telegram"></i>
+                        <h2>Telegram Bot Control</h2>
+                    </div>
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="currentUser">Admin</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="system-status">
+                        <i class="fas fa-server"></i>
+                        <span id="systemStatus">Checking...</span>
+                    </div>
+                    <button id="logoutBtn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard -->
+            <div class="dashboard">
+                <!-- Left Sidebar -->
+                <div class="sidebar">
+                    <nav class="nav-menu">
+                        <button class="nav-item active" data-tab="terminal">
+                            <i class="fas fa-terminal"></i> Terminal
+                        </button>
+                        <button class="nav-item" data-tab="bot-control">
+                            <i class="fas fa-robot"></i> Bot Control
+                        </button>
+                        <button class="nav-item" data-tab="config">
+                            <i class="fas fa-cog"></i> Configuration
+                        </button>
+                        <button class="nav-item" data-tab="users">
+                            <i class="fas fa-users"></i> Users & Groups
+                        </button>
+                        <button class="nav-item" data-tab="logs">
+                            <i class="fas fa-history"></i> Logs
+                        </button>
+                        <button class="nav-item" data-tab="monitoring">
+                            <i class="fas fa-chart-line"></i> Monitoring
+                        </button>
+                    </nav>
+                    
+                    <div class="quick-actions">
+                        <h4><i class="fas fa-bolt"></i> Quick Actions</h4>
+                        <button class="quick-btn" data-action="start-bot">
+                            <i class="fas fa-play"></i> Start Bot
+                        </button>
+                        <button class="quick-btn" data-action="stop-bot">
+                            <i class="fas fa-stop"></i> Stop Bot
+                        </button>
+                        <button class="quick-btn" data-action="check-logs">
+                            <i class="fas fa-file-alt"></i> View Logs
+                        </button>
+                        <button class="quick-btn" data-action="update-bot">
+                            <i class="fas fa-sync"></i> Update Bot
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="content">
+                    <!-- Terminal Tab -->
+                    <div id="terminalTab" class="tab-content active">
+                        <div class="terminal-header">
+                            <h3><i class="fas fa-terminal"></i> Secure Terminal</h3>
+                            <div class="terminal-controls">
+                                <button id="clearTerminal" class="btn-small">
+                                    <i class="fas fa-broom"></i> Clear
+                                </button>
+                                <button id="copyTerminal" class="btn-small">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                                <button id="saveTerminal" class="btn-small">
+                                    <i class="fas fa-save"></i> Save Log
+                                </button>
+                            </div>
+                        </div>
+                        <div class="terminal-container">
+                            <div id="terminalOutput" class="terminal-output">
+                                <div class="welcome-message">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <h4>Secure Terminal Ready</h4>
+                                    <p>Allowed commands: ls, pwd, git, npm, python, node, ps, tail, cat config.json</p>
+                                    <p>Type 'help' for available commands</p>
+                                </div>
+                            </div>
+                            <div class="terminal-input">
+                                <span class="prompt">$</span>
+                                <input type="text" id="commandInput" 
+                                       placeholder="Enter command (e.g., ls -la, git status, node --version)"
+                                       autocomplete="off">
+                                <button id="executeCommand" class="btn-execute">
+                                    <i class="fas fa-play"></i> Execute
+                                </button>
+                            </div>
+                            <div class="command-history">
+                                <h5><i class="fas fa-history"></i> Recent Commands</h5>
+                                <div id="historyList"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bot Control Tab -->
+                    <div id="botControlTab" class="tab-content">
+                        <h3><i class="fas fa-robot"></i> Bot Management</h3>
+                        <div class="bot-controls">
+                            <div class="bot-status-card">
+                                <div class="status-header">
+                                    <h4>Bot Status</h4>
+                                    <span class="status-indicator" id="botStatusIndicator">
+                                        <i class="fas fa-circle"></i> Checking...
+                                    </span>
+                                </div>
+                                <div class="status-details">
+                                    <p><i class="fas fa-microchip"></i> CPU: <span id="botCpu">-</span></p>
+                                    <p><i class="fas fa-memory"></i> Memory: <span id="botMemory">-</span></p>
+                                    <p><i class="fas fa-clock"></i> Uptime: <span id="botUptime">-</span></p>
+                                </div>
+                                <div class="status-actions">
+                                    <button class="btn-action btn-start" data-action="start">
+                                        <i class="fas fa-play"></i> Start
+                                    </button>
+                                    <button class="btn-action btn-restart" data-action="restart">
+                                        <i class="fas fa-redo"></i> Restart
+                                    </button>
+                                    <button class="btn-action btn-stop" data-action="stop">
+                                        <i class="fas fa-stop"></i> Stop
+                                    </button>
+                                    <button class="btn-action btn-logs" data-action="logs">
+                                        <i class="fas fa-file-alt"></i> Logs
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bot-config-editor">
+                                <h4>Bot Configuration</h4>
+                                <div class="config-form">
+                                    <div class="form-row">
+                                        <label>Telegram API Token:</label>
+                                        <input type="password" id="apiToken" 
+                                               placeholder="Enter bot token">
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Admin User IDs (comma separated):</label>
+                                        <input type="text" id="adminIds" 
+                                               placeholder="123456789,987654321">
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Auto-restart on crash:</label>
+                                        <select id="autoRestart">
+                                            <option value="true">Yes</option>
+                                            <option value="false">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Log Level:</label>
+                                        <select id="logLevel">
+                                            <option value="debug">Debug</option>
+                                            <option value="info">Info</option>
+                                            <option value="warn">Warn</option>
+                                            <option value="error">Error</option>
+                                        </select>
+                                    </div>
+                                    <button id="saveConfig" class="btn-save">
+                                        <i class="fas fa-save"></i> Save Configuration
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Tab -->
+                    <div id="configTab" class="tab-content">
+                        <h3><i class="fas fa-cog"></i> System Configuration</h3>
+                        <div class="config-sections">
+                            <!-- Add your configuration forms here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-info">
+                    <span><i class="fas fa-user-shield"></i> Secure Session</span>
+                    <span><i class="fas fa-clock"></i> Last Active: <span id="lastActive">Now</span></span>
+                    <span><i class="fas fa-network-wired"></i> IP: <span id="currentIP">Loading...</span></span>
+                </div>
+                <div class="footer-version">
+                    <span>v1.0.0 | Telegram Bot Panel</span>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/config-editor.js"></script>
+    <script src="/js/terminal.js"></script>
+    <script src="/js/bot-manager.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
