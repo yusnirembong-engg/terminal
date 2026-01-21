@@ -1,0 +1,39 @@
+{
+  "name": "telebot-control-panel",
+  "version": "1.0.0",
+  "description": "Secure Telegram Bot Control Panel with Terminal",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "npm run build:html && npm run build:css && npm run build:js",
+    "build:html": "cp src/public/*.html dist/",
+    "build:css": "cp -r src/public/css dist/css",
+    "build:js": "cp -r src/public/js dist/js",
+    "start": "node server.js",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "axios": "^1.4.0",
+    "socket.io": "^4.6.1",
+    "node-cache": "^5.1.2",
+    "rate-limiter-flexible": "^2.4.2",
+    "winston": "^3.10.0",
+    "uuid": "^9.0.0",
+    "crypto-js": "^4.1.1",
+    "express-rate-limit": "^6.10.0",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^1.6.0",
+    "netlify-cli": "^15.0.0",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
