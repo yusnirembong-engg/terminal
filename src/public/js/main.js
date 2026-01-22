@@ -1,4 +1,4 @@
-const NETLIFY_URL = "https://telebot-panel.netlify.app/"
+const NETLIFY_URL = window.location.origin;
 
 class BotControlPanel {
     constructor() {
