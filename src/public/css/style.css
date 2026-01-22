@@ -796,6 +796,398 @@ body {
     box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
 }
 
+/* Telegram User Bot Styles */
+.telegram-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.telegram-section {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.telegram-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row-inline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    align-items: end;
+}
+
+.form-row-inline > div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row-inline label {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Bots Grid */
+.bots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.bot-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    border-left: 4px solid var(--primary);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.bot-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.bot-card.connected {
+    border-left-color: var(--success);
+}
+
+.bot-card.stopped {
+    border-left-color: var(--danger);
+}
+
+.bot-card.created {
+    border-left-color: var(--warning);
+}
+
+.bot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.bot-header h4 {
+    color: var(--text-light);
+    font-size: 18px;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-badge.connected {
+    background: rgba(40, 167, 69, 0.2);
+    color: var(--success);
+}
+
+.status-badge.stopped {
+    background: rgba(220, 53, 69, 0.2);
+    color: var(--danger);
+}
+
+.status-badge.created {
+    background: rgba(255, 193, 7, 0.2);
+    color: var(--warning);
+}
+
+.bot-details p {
+    margin: 8px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bot-details i {
+    width: 16px;
+    color: var(--primary);
+}
+
+.bot-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.bot-status-display {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* Jobs List */
+.jobs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.job-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 20px;
+    border-left: 4px solid var(--info);
+}
+
+.job-card.running {
+    border-left-color: var(--success);
+}
+
+.job-card.paused {
+    border-left-color: var(--warning);
+}
+
+.job-card.stopped {
+    border-left-color: var(--danger);
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.job-header h5 {
+    color: var(--text-light);
+    font-size: 16px;
+}
+
+.job-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.job-details p {
+    color: var(--text-muted);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.job-details i {
+    width: 14px;
+    color: var(--primary);
+}
+
+.job-message {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.job-message strong {
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.job-message p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.job-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Message History */
+.message-history {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 15px;
+    border-left: 4px solid var(--primary);
+}
+
+.message-item.sent {
+    border-left-color: var(--success);
+}
+
+.message-item.failed {
+    border-left-color: var(--danger);
+}
+
+.message-item.pending {
+    border-left-color: var(--warning);
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.message-details {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.message-details i {
+    color: var(--primary);
+    width: 14px;
+}
+
+.message-content {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.message-content strong {
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.message-content p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Chats Grid */
+.chats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.chat-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s;
+}
+
+.chat-item:hover {
+    transform: translateY(-5px);
+}
+
+.chat-item.group {
+    border-top: 3px solid var(--success);
+}
+
+.chat-item.channel {
+    border-top: 3px solid var(--info);
+}
+
+.chat-item.private {
+    border-top: 3px solid var(--primary);
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.chat-header h5 {
+    color: var(--text-light);
+    font-size: 16px;
+    margin: 0;
+}
+
+.chat-type {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.chat-type.group {
+    background: rgba(40, 167, 69, 0.2);
+    color: var(--success);
+}
+
+.chat-type.channel {
+    background: rgba(23, 162, 184, 0.2);
+    color: var(--info);
+}
+
+.chat-type.private {
+    background: rgba(0, 136, 204, 0.2);
+    color: var(--primary);
+}
+
+.chat-details p {
+    margin: 8px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-details i {
+    width: 14px;
+    color: var(--primary);
+}
+
+.chat-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* No Data Message */
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-style: italic;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    border: 1px dashed var(--border);
+}
+
 /* Footer */
 .footer {
     background: var(--bg-card);
@@ -1237,5 +1629,18 @@ body {
     .notification {
         min-width: auto;
         width: calc(100vw - 40px);
+    }
+    
+    .bots-grid,
+    .chats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .job-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row-inline {
+        grid-template-columns: 1fr;
     }
 }
