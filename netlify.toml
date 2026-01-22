@@ -1,9 +1,10 @@
 [build]
-  publish = "dist"
-  command = "npm run build"
+  publish = "src"  # Arahkan ke folder src
+  command = "echo 'Building for Netlify...'"
 
 [build.environment]
   NODE_VERSION = "18"
+  NPM_FLAGS = "--prefix functions"
 
 [functions]
   directory = "functions"
