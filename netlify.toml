@@ -1,21 +1,21 @@
 [build]
-  publish = "src"  # Arahkan ke folder src
-  command = "echo 'Building for Netlify...'"
+  publish = "src"                    # ⚠️ Folder yang berisi index.html
+  command = "echo 'Build completed'"
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_FLAGS = "--prefix functions"
 
 [functions]
   directory = "functions"
   node_bundler = "esbuild"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
+# ⚠️ Redirects WAJIB ADA
 [[redirects]]
   from = "/*"
   to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
   status = 200
