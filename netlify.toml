@@ -1,5 +1,5 @@
 [build]
-  publish = "src"                    # ⚠️ Folder yang berisi index.html
+  publish = "src/public"         # ⚠️ Folder yang berisi index.html
   command = "echo 'Build completed'"
 
 [build.environment]
