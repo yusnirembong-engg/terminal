@@ -5,9 +5,17 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const ALLOWED_IPS = process.env.ALLOWED_IPS ? process.env.ALLOWED_IPS.split(',').map(ip => ip.trim()) : ['127.0.0.1'];
 
+// 🚨 FIX: Tambahkan IP Anda secara manual
+if (!ALLOWED_IPS.includes('49.156.45.218')) {
+    ALLOWED_IPS.push('49.156.45.218');
+}
+if (!ALLOWED_IPS.includes('::1')) {
+    ALLOWED_IPS.push('::1'); // IPv6 localhost
+}
+
 // DEBUG: Log untuk troubleshooting
 console.log('Environment ALLOWED_IPS:', process.env.ALLOWED_IPS);
-console.log('Parsed ALLOWED_IPS:', ALLOWED_IPS);
+console.log('Final ALLOWED_IPS:', ALLOWED_IPS);
 
 // Mock user database
 const USERS = {
@@ -48,9 +56,12 @@ exports.handler = async (event, context) => {
     if (requestData.action === 'check-ip') {
         const isAllowed = ALLOWED_IPS.includes(clientIP) || 
                          ALLOWED_IPS.includes('*') || 
-                         ALLOWED_IPS.includes('0.0.0.0');
+                         ALLOWED_IPS.includes('0.0.0.0') ||
+                         clientIP === '49.156.45.218'; // 🚨 Tambah check spesifik
         
         console.log(`✅ IP ${clientIP} allowed: ${isAllowed}`);
+        console.log(`🔍 Checking if ${clientIP} is in:`, ALLOWED_IPS);
+        console.log(`🔍 Client IP matches '49.156.45.218':`, clientIP === '49.156.45.218');
         
         return {
             statusCode: 200,
@@ -61,14 +72,12 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({ 
                 allowed: isAllowed,
                 ip: clientIP,
-                allowedIPs: ALLOWED_IPS
+                allowedIPs: ALLOWED_IPS,
+                yourIP: '49.156.45.218',
+                match: clientIP === '49.156.45.218'
             })
         };
     }
-    
-    // === TEMPORARY BYPASS: Allow login untuk testing ===
-    // Hapus bagian ini setelah IP whitelist berfungsi
-    console.log('⚠️  TEMPORARY: Bypassing IP check for login');
     
     // Login logic
     if (!requestData.username || !requestData.password) {
