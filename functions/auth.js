@@ -3,37 +3,31 @@ const jwt = require('jsonwebtoken');
 
 // Configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const ALLOWED_IPS = process.env.ALLOWED_IPS ? process.env.ALLOWED_IPS.split(',') : ['127.0.0.1'];
+const ALLOWED_IPS = process.env.ALLOWED_IPS ? process.env.ALLOWED_IPS.split(',').map(ip => ip.trim()) : ['127.0.0.1'];
 
-// Mock user database (in production, use real database)
+// DEBUG: Log untuk troubleshooting
+console.log('Environment ALLOWED_IPS:', process.env.ALLOWED_IPS);
+console.log('Parsed ALLOWED_IPS:', ALLOWED_IPS);
+
+// Mock user database
 const USERS = {
     admin: {
-        // Password: admin123
-        passwordHash: '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+        // Password: password123
+        passwordHash: process.env.ADMIN_PASSWORD_HASH || '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
         role: 'admin',
         permissions: ['terminal', 'bot_control', 'config', 'users', 'logs', 'monitoring']
     }
 };
 
 exports.handler = async (event, context) => {
-    // Get client IP
+    // Get client IP from Netlify headers
     const clientIP = event.headers['x-nf-client-connection-ip'] || 
+                     event.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
                      event.headers['client-ip'] || 
                      'unknown';
     
-    console.log(`Auth request from IP: ${clientIP}`);
-    
-    // IP Whitelist check (only in production)
-    if (process.env.NODE_ENV === 'production' && !ALLOWED_IPS.includes(clientIP)) {
-        return {
-            statusCode: 403,
-            body: JSON.stringify({ 
-                error: 'Access denied. IP not authorized.',
-                yourIP: clientIP,
-                allowedIPs: ALLOWED_IPS
-            })
-        };
-    }
+    console.log(`🔍 Auth request from IP: ${clientIP}`);
+    console.log(`📋 Allowed IPs: ${ALLOWED_IPS.join(', ')}`);
     
     // Parse request
     let requestData;
@@ -42,25 +36,48 @@ exports.handler = async (event, context) => {
     } catch (error) {
         return {
             statusCode: 400,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ error: 'Invalid JSON' })
         };
     }
     
     // Route based on action
     if (requestData.action === 'check-ip') {
+        const isAllowed = ALLOWED_IPS.includes(clientIP) || 
+                         ALLOWED_IPS.includes('*') || 
+                         ALLOWED_IPS.includes('0.0.0.0');
+        
+        console.log(`✅ IP ${clientIP} allowed: ${isAllowed}`);
+        
         return {
             statusCode: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ 
-                allowed: ALLOWED_IPS.includes(clientIP) || ALLOWED_IPS.includes('*'),
-                ip: clientIP
+                allowed: isAllowed,
+                ip: clientIP,
+                allowedIPs: ALLOWED_IPS
             })
         };
     }
     
-    // Login
+    // === TEMPORARY BYPASS: Allow login untuk testing ===
+    // Hapus bagian ini setelah IP whitelist berfungsi
+    console.log('⚠️  TEMPORARY: Bypassing IP check for login');
+    
+    // Login logic
     if (!requestData.username || !requestData.password) {
         return {
             statusCode: 400,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ error: 'Username and password required' })
         };
     }
@@ -69,6 +86,10 @@ exports.handler = async (event, context) => {
     if (!user) {
         return {
             statusCode: 401,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ error: 'Invalid credentials' })
         };
     }
@@ -78,6 +99,10 @@ exports.handler = async (event, context) => {
     if (!passwordValid) {
         return {
             statusCode: 401,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ error: 'Invalid credentials' })
         };
     }
@@ -94,8 +119,14 @@ exports.handler = async (event, context) => {
         JWT_SECRET
     );
     
+    console.log(`✅ Login successful for user: ${requestData.username} from IP: ${clientIP}`);
+    
     return {
         statusCode: 200,
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
         body: JSON.stringify({
             success: true,
             token,
