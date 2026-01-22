@@ -1,3 +1,5 @@
+const NETLIFY_URL = "https://telebot-panel.netlify.app/"
+
 class BotControlPanel {
     constructor() {
         this.token = null;
@@ -47,7 +49,6 @@ class BotControlPanel {
             this.currentIP = 'Unknown';
         }
     }
-
     async checkIPAuthorization(ip) {
         try {
             const response = await fetch('/.netlify/functions/auth', {
