@@ -76,6 +76,9 @@
                         <button class="nav-item" data-tab="bot-control">
                             <i class="fas fa-robot"></i> Bot Control
                         </button>
+                        <button class="nav-item" data-tab="telegram">
+                            <i class="fab fa-telegram"></i> Telegram User Bot
+                        </button>
                         <button class="nav-item" data-tab="config">
                             <i class="fas fa-cog"></i> Configuration
                         </button>
@@ -214,6 +217,175 @@
                                     <button id="saveConfig" class="btn-save">
                                         <i class="fas fa-save"></i> Save Configuration
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Telegram User Bot Tab -->
+                    <div id="telegramTab" class="tab-content">
+                        <h3><i class="fab fa-telegram"></i> Telegram User Bot</h3>
+                        
+                        <div class="telegram-controls">
+                            <!-- Bot Creation Section -->
+                            <div class="telegram-section" id="createBotSection">
+                                <h4><i class="fas fa-plus-circle"></i> Create New User Bot</h4>
+                                <form id="createBotForm" class="telegram-form">
+                                    <div class="form-row">
+                                        <label>Bot Name:</label>
+                                        <input type="text" id="botName" placeholder="My Telegram Bot" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Telegram API ID:</label>
+                                        <input type="text" id="apiId" placeholder="1234567" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Telegram API Hash:</label>
+                                        <input type="text" id="apiHash" placeholder="abcdef1234567890" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Phone Number:</label>
+                                        <input type="text" id="phoneNumber" placeholder="+1234567890" required>
+                                    </div>
+                                    <button type="submit" class="btn-save">
+                                        <i class="fas fa-robot"></i> Create User Bot
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Verification Section (Hidden initially) -->
+                            <div class="telegram-section" id="verifyBotSection" style="display: none;">
+                                <h4><i class="fas fa-shield-alt"></i> Verify Phone Number</h4>
+                                <form id="verifyBotForm" class="telegram-form">
+                                    <input type="hidden" id="verificationBotId">
+                                    <div class="form-row">
+                                        <label>Verification Code:</label>
+                                        <input type="text" id="verificationCode" placeholder="12345" required>
+                                        <small>Enter the code sent to your phone</small>
+                                    </div>
+                                    <button type="submit" class="btn-save">
+                                        <i class="fas fa-check"></i> Verify & Connect
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Bot Status Panel -->
+                            <div class="telegram-section" id="botControlPanel" style="display: none;">
+                                <h4><i class="fas fa-info-circle"></i> Current Bot Status</h4>
+                                <div class="bot-status-display" id="currentBotStatus">
+                                    No bot selected
+                                </div>
+                            </div>
+
+                            <!-- Bot List -->
+                            <div class="telegram-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-list"></i> Your Bots</h4>
+                                    <button id="refreshBots" class="btn-small">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                </div>
+                                <div class="bots-grid" id="botsList">
+                                    <!-- Bots will be loaded here -->
+                                </div>
+                            </div>
+
+                            <!-- Auto Text Section -->
+                            <div class="telegram-section">
+                                <h4><i class="fas fa-comment-dots"></i> Auto Text Messages</h4>
+                                <form id="createAutoTextForm" class="telegram-form">
+                                    <div class="form-row">
+                                        <label>Target Chat IDs (comma separated):</label>
+                                        <input type="text" id="autoTextTargets" 
+                                               placeholder="-1001234567890, 123456789" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Message:</label>
+                                        <textarea id="autoTextMessage" rows="4" 
+                                                  placeholder="Enter your message here..." required></textarea>
+                                    </div>
+                                    <div class="form-row-inline">
+                                        <div>
+                                            <label>Interval (seconds):</label>
+                                            <input type="number" id="autoTextInterval" value="60" min="10" max="3600">
+                                        </div>
+                                        <div>
+                                            <label>Repeat Count:</label>
+                                            <input type="number" id="autoTextRepeat" value="1" min="1" max="100">
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" id="autoTextStartNow" checked>
+                                                Start Immediately
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn-save">
+                                        <i class="fas fa-play-circle"></i> Create Auto-Text
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Auto Text Jobs List -->
+                            <div class="telegram-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-tasks"></i> Active Auto-Text Jobs</h4>
+                                    <button id="refreshJobs" class="btn-small">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                </div>
+                                <div class="jobs-list" id="autoTextJobsList">
+                                    <!-- Jobs will be loaded here -->
+                                </div>
+                            </div>
+
+                            <!-- Send Message Section -->
+                            <div class="telegram-section" id="sendMessageSection">
+                                <h4><i class="fas fa-paper-plane"></i> Send Message</h4>
+                                <form id="sendMessageForm" class="telegram-form">
+                                    <div class="form-row">
+                                        <label>Chat ID:</label>
+                                        <input type="text" id="sendMessageChatId" 
+                                               placeholder="-1001234567890 or 123456789" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Message:</label>
+                                        <textarea id="sendMessageText" rows="4" 
+                                                  placeholder="Type your message here..." required></textarea>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Schedule (optional):</label>
+                                        <input type="datetime-local" id="sendMessageSchedule">
+                                    </div>
+                                    <button type="submit" class="btn-save">
+                                        <i class="fas fa-paper-plane"></i> Send Message
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Message History -->
+                            <div class="telegram-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-history"></i> Message History</h4>
+                                    <button id="refreshHistory" class="btn-small">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                </div>
+                                <div class="message-history" id="messageHistory">
+                                    <!-- Messages will be loaded here -->
+                                </div>
+                            </div>
+
+                            <!-- Connected Chats -->
+                            <div class="telegram-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-comments"></i> Connected Chats</h4>
+                                    <button id="refreshChats" class="btn-small">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                </div>
+                                <div class="chats-grid" id="connectedChats">
+                                    <!-- Chats will be loaded here -->
                                 </div>
                             </div>
                         </div>
