@@ -1,5 +1,3 @@
-const NETLIFY_URL = window.location.origin;
-
 class BotControlPanel {
     constructor() {
         this.token = null;
