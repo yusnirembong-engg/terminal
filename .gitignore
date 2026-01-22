@@ -1,32 +1,26 @@
 # Dependencies
 node_modules/
+functions/node_modules/
 
-# Environment variables
+# Environment
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.production
+
+# Netlify
+.netlify/
+functions/tmp/
+
+# System
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
 logs/
-
-# Runtime data
-data/config.json
-data/sessions/
-data/logs/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Netlify
-.netlify/
-functions/tmp/
