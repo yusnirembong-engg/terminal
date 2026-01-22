@@ -1,0 +1,24 @@
+{
+  "name": "telebot-control-panel",
+  "version": "1.0.0",
+  "description": "Telegram Bot Control Panel",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'Build completed'",
+    "start": "netlify dev",
+    "deploy:netlify": "netlify deploy --prod",
+    "deploy:github": "echo 'Deploy to GitHub Pages manually'"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^1.6.0",
+    "netlify-cli": "^15.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
