@@ -1,20 +1,18 @@
 {
   "name": "telebot-control-panel",
   "version": "1.0.0",
-  "description": "Secure Telegram Bot Control Panel",
-  "main": "src/index.js",
+  "description": "Telegram Bot Control Panel",
+  "main": "index.js",
   "scripts": {
     "dev": "netlify dev",
-    "build": "mkdir -p dist && cp -r src/public/* dist/",
-    "prebuild": "npm install",
-    "postbuild": "echo 'Build completed successfully'",
+    "build": "echo 'Build completed'",
     "start": "netlify dev",
-    "deploy": "netlify deploy --prod"
+    "deploy:netlify": "netlify deploy --prod",
+    "deploy:github": "echo 'Deploy to GitHub Pages manually'"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.0",
-    "axios": "^1.4.0"
+    "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
     "@netlify/functions": "^1.6.0",
