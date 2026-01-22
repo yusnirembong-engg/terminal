@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Configuration
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-debug';
 const ALLOWED_IPS = ['49.156.45.218', '127.0.0.1', '::1'];
 
 // Tambahkan validasi JWT_SECRET
