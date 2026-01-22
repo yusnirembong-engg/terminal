@@ -57,6 +57,7 @@ class BotControlPanel {
             });
             
             const data = await response.json();
+            console.log('IP Check Response:', data);
             
             if (!data.allowed) {
                 const loginForm = document.getElementById('loginForm');
