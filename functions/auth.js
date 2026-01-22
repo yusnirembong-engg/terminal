@@ -2,8 +2,15 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Configuration
-const JWT_SECRET = process.env.JWT_SECRET || 'f8d7a3c6b5e49201738a1d2f4c9b6a7e5d3c2b1a0f9e8d7c6b5a49382716f5e4d3c2b1a0f9e8d7c6b5a49382716f5e4d3c2b1a0f9e8d7c6b5a49382716f5e4d3c2';
+const JWT_SECRET = process.env.JWT_SECRET;
 const ALLOWED_IPS = ['49.156.45.218', '127.0.0.1', '::1'];
+
+// Tambahkan validasi JWT_SECRET
+if (!JWT_SECRET) {
+  console.error('❌ JWT_SECRET not found in environment variables');
+  console.error('💡 Set JWT_SECRET in Netlify dashboard:');
+  console.error('💡 Site settings → Environment variables → Add JWT_SECRET');
+}
 
 console.log('🔧 Auth function loaded - HARDCODE VERSION');
 console.log('✅ JWT Secret present:', !!JWT_SECRET);
@@ -15,11 +22,24 @@ const USERS = {
         // 🎯 PASTI WORK - Simple password check
         password: 'admin123', // Password hardcode
         role: 'admin',
-        permissions: ['terminal', 'bot_control', 'config', 'users', 'logs', 'monitoring']
+        permissions: ['terminal', 'bot_control', 'telegram', 'config', 'users', 'logs', 'monitoring']
     }
 };
 
 exports.handler = async (event, context) => {
+    // Validasi JWT_SECRET sebelum melanjutkan
+    if (!JWT_SECRET) {
+        return {
+            statusCode: 500,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                error: 'Server misconfiguration',
+                message: 'JWT_SECRET not set. Please configure in Netlify dashboard.',
+                hint: 'Go to Site settings → Environment variables → Add JWT_SECRET variable'
+            })
+        };
+    }
+    
     console.log('📥 Auth request received');
     
     // Get client IP
